@@ -1,26 +1,3 @@
-
-function waitForElementAndCallBack(selector, callback, maxAttempts = 10000, interval = 100) {
-    return new Promise(async (resolve, reject) => {
-      let attempts = 0;
-  
-      const checkElement = () => {
-        const element = document.querySelector(selector);
-        if (element && typeof callback === 'function') {
-          callback(element)
-          resolve();
-        } else if (attempts >= maxAttempts) {
-          reject(new Error("Element not found after multiple attempts."));
-        } else {
-          attempts++;
-          setTimeout(checkElement, interval);
-        }
-      };
-  
-      checkElement();
-    });
-  }
-  
-
 function textSelector(n){
   return `#mp4 > table > tbody > tr:nth-child(${n}) > td:nth-child(1)`
 }
@@ -31,31 +8,54 @@ function closeTabs(){
   window.close()
 }
 
-  async function download(videoFormat){
-    await waitForElementAndCallBack("#mp4 > table > tbody", async function (element){
-      const rows = element.getElementsByTagName("tr")
-      let foundFormat = false
-      for(let i = 0; i < rows.length; i++){
-        const text = rows[i].getElementsByTagName("td")[0].textContent
-        if(text.includes(videoFormat)){
-          // download
-          waitForElementAndCallBack(btnSelector(i+1), async (el) => {
-          el.click()
-          await waitForElementAndCallBack("#process-result > div > a", (e) => {e.click()}, 1000000)
-            closeTabs()
-          })
-          foundFormat = true
-          break;
-        }
-      }
-      if(!foundFormat){
-        alert("Desired Format Not Found. Try Downloading It Yourself")
-      }
-    })
+
+async function waitForElement(selector, maxAttempts = 10000, interval = 100){
+  for (let i = 0; i < maxAttempts; i++) {
+    let elem = document.querySelector(selector)
+    if(elem){
+      return elem;
+    } 
+    else{
+      await new Promise(resolve => setTimeout( resolve , interval))
+    }
   }
+  throw Error("Element Not Found")
+}
+
+async function findDownloadButton(videoFormat){
+  const table = await waitForElement("#mp4 > table > tbody");
+  const rows = table.getElementsByTagName("tr");
+  let foundFormat = false;
+
+  for (let index = 0; index < rows.length; index++) {
+    const text = rows[index].getElementsByTagName("td")[0].textContent;
+    if(text.includes(videoFormat)){
+      foundFormat = true;
+      try{
+        await clickToDownload(index+1);
+        break;
+      }
+      catch(err){
+        alert("Format Found But Error Occurred"+err.toString());
+      }
+    }
+  }
+
+  if(!foundFormat){
+    alert("Desired Format Not Found.Try Download It Yourself");
+  }
+}
+
+async function clickToDownload(buttonIndex){
+  const downloadbtn = await waitForElement(btnSelector(buttonIndex))
+  downloadbtn.click()
+  const confirmbtn = await waitForElement("#process-result > div > a", maxAttempts = 1000000)
+  confirmbtn.click()
+  closeTabs()
+}
 
 // Get data from storage
 chrome.storage.local.get(["format"], function(result) {
-    download(result.format)
+    findDownloadButton(result.format)
     chrome.storage.local.clear()
 });

@@ -9,6 +9,9 @@ async function waitForElementAndClick(selector, maxAttempts = 10000, interval = 
       await new Promise(resolve => {setTimeout(() => { resolve() }, interval)});
     }
   }
+
+  throw Error("Element Not Found")
+
 }
 
 function closeTabs(){
