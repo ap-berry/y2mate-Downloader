@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "Download Youtube Video",
+    "version": "2.0",
+    "description": "A Simple Tool that assists you in downloading youtube videos. Lets you download audio and video formats with ease (upto a certain degree)",
+    "icons": {
+      "48": "/resources/icon.png"
+    },
+    "action": {
+      "default_popup": "/html/popup.html"
+    },
+    "permissions": [
+      "tabs",
+      "activeTab",
+      "scripting",
+      "storage"
+    ],
+    
+    "host_permissions": [
+      "https://www.youtube.com/",
+      "https://www.y2mate.com/"
+    ]
+  }
+  
