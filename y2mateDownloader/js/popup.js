@@ -1,8 +1,3 @@
-
-
-
-let format = null;
-
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("audioBtn").addEventListener("click", downloadMp4)
   document.getElementById("videoBtn").addEventListener("click", downloadVideo)

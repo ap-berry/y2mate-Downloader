@@ -1,25 +1,18 @@
-function waitForElementAndClick(selector, maxAttempts = 10000, interval = 100) {
-  return new Promise(async (resolve, reject) => {
-    let attempts = 0;
-
-    const checkElement = () => {
-      const element = document.querySelector(selector);
-      if (element) {
-        element.click();
-        resolve();
-      } else if (attempts >= maxAttempts) {
-        reject(new Error("Element not found after multiple attempts."));
-      } else {
-        attempts++;
-        setTimeout(checkElement, interval);
-      }
-    };
-
-    checkElement();
-  });
+async function waitForElementAndClick(selector, maxAttempts = 10000, interval = 100){
+  for(let i = 0; i < maxAttempts; i++){
+    let elem = document.querySelector(selector)
+    if(elem){
+      elem.click();
+      return;
+    }
+    else{
+      await new Promise(resolve => {setTimeout(() => { resolve() }, interval)});
+    }
+  }
 }
+
 function closeTabs(){
-  window.close()
+  window.close();
 }
 
 
