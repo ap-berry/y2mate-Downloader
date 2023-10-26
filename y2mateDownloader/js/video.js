@@ -9,6 +9,7 @@ function closeTabs(){
 }
 
 
+
 async function waitForElement(selector, maxAttempts = 10000, interval = 100){
   for (let i = 0; i < maxAttempts; i++) {
     let elem = document.querySelector(selector)
@@ -46,6 +47,7 @@ async function findDownloadButton(videoFormat){
   }
 }
 
+// workflow
 async function clickToDownload(buttonIndex){
   const downloadbtn = await waitForElement(btnSelector(buttonIndex))
   downloadbtn.click()
@@ -54,8 +56,8 @@ async function clickToDownload(buttonIndex){
   closeTabs()
 }
 
-// Get data from storage
-chrome.storage.local.get(["format"], function(result) {
-    findDownloadButton(result.format)
+// Get data from storage and call
+chrome.storage.local.get(["format"], async function(result) {
+    await findDownloadButton(result.format)
     chrome.storage.local.clear()
 });

@@ -9,11 +9,15 @@
     "action": {
       "default_popup": "/html/popup.html"
     },
+    "background": {
+      "service_worker": "/js/bg.js"
+    },
     "permissions": [
       "tabs",
       "activeTab",
       "scripting",
-      "storage"
+      "storage",
+      "contextMenus"
     ],
     
     "host_permissions": [
