@@ -22,6 +22,9 @@ chrome.contextMenus.onClicked.addListener((info) => {
     else if (info.menuItemId === "audio"){
       openY2mateAndInjectScript("/js/audio.js", info.linkUrl); 
     }
+    else if(info.menuItemId === "open normally"){
+      openY2mateAndInjectScript('NoScript', info.linkUrl)
+    }
     else {
       throw "wtf this not possible"
     }
@@ -34,6 +37,9 @@ chrome.contextMenus.onClicked.addListener((info) => {
     else if (info.menuItemId === "audio"){
       openY2mateAndInjectScript("/js/audio.js"); 
     }
+    else if(info.menuItemId === "open normally"){
+      openY2mateAndInjectScript('NoScript')
+    }
     else {
       throw "wtf this not possible"
     }
@@ -41,18 +47,13 @@ chrome.contextMenus.onClicked.addListener((info) => {
 })
 
 chrome.runtime.onInstalled.addListener(() => {
-    const video = chrome.contextMenus.create({
-      contexts: ['link', 'page'],
-      title: "Video",
-      id : 'video',
-    })
+    chrome.contextMenus.create({ title: "Open with y2mate", id: 'open normally', contexts: ['link', 'page'] })
 
-    chrome.contextMenus.create({
-      contexts: ['link', 'page'],
-      title: "Audio (mp3)",
-      id : 'audio',
-    })
+    const video = chrome.contextMenus.create({ contexts: ['link', 'page'], title: "Video", id : 'video' })
 
+    chrome.contextMenus.create({ contexts: ['link', 'page'], title: "Audio (mp3)", id : 'audio', })
+
+    //childs
     chrome.contextMenus.create({ title: "1080p HD", parentId : video, id: '1080p', contexts: ['link', 'page'] })
     chrome.contextMenus.create({ title: "720p FHD", parentId : video, id: '720p', contexts: ['link', 'page'] })
     chrome.contextMenus.create({ title: "480p", parentId : video, id: '480p', contexts: ['link', 'page'] })
@@ -78,23 +79,26 @@ chrome.runtime.onMessage.addListener(req => {
     }
   }
   
-  function openY2mateAndInjectScript(type, url = 'optional'){
+  function openY2mateAndInjectScript(script = 'NoScript', url = 'optional'){
      chrome.tabs.query({ active: true, currentWindow: true },function (tabs) {
       let modifiedUrl;
       if (url !== 'optional') modifiedUrl = modifyUrl(url);
       else modifiedUrl = modifyUrl(tabs[0].url);
       if(!modifiedUrl){
-        alert("Wrong Website");
+        chrome.scripting.executeScript({
+          target: {tabId : tabs[0].id},
+          func : () => { alert("wrong website or not valid link")}
+        });
         return 0;
       }
       chrome.tabs.create({ url : modifiedUrl }, (tab) => {
-        if(typeof type !== "string"){
+        if(script === "NoScript"){
           return 0;
         }
         //inject scripts
         chrome.scripting.executeScript({
           target : { tabId : tab.id},
-          files : [type]
+          files : [script]
         }, () => {
           chrome.tabs.goBack();
         })
