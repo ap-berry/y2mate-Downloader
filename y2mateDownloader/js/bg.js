@@ -47,17 +47,18 @@ chrome.contextMenus.onClicked.addListener((info) => {
 })
 
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.contextMenus.create({ title: "Open with y2mate", id: 'open normally', contexts: ['link', 'page'] })
+  const contexts = ['link', 'page', 'video']
+    chrome.contextMenus.create({ title: "Open with y2mate", id: 'open normally', contexts: contexts })
 
-    const video = chrome.contextMenus.create({ contexts: ['link', 'page'], title: "Video", id : 'video' })
+    const video = chrome.contextMenus.create({ contexts: contexts, title: "Video", id : 'video' })
 
     chrome.contextMenus.create({ contexts: ['link', 'page'], title: "Audio (mp3)", id : 'audio', })
 
     //childs
-    chrome.contextMenus.create({ title: "1080p HD", parentId : video, id: '1080p', contexts: ['link', 'page'] })
-    chrome.contextMenus.create({ title: "720p FHD", parentId : video, id: '720p', contexts: ['link', 'page'] })
-    chrome.contextMenus.create({ title: "480p", parentId : video, id: '480p', contexts: ['link', 'page'] })
-    chrome.contextMenus.create({ title: "360p", parentId : video, id: '360p', contexts: ['link', 'page'] })
+    chrome.contextMenus.create({ title: "1080p HD", parentId : video, id: '1080p', contexts:  contexts})
+    chrome.contextMenus.create({ title: "720p FHD", parentId : video, id: '720p', contexts: contexts })
+    chrome.contextMenus.create({ title: "480p", parentId : video, id: '480p', contexts: contexts })
+    chrome.contextMenus.create({ title: "360p", parentId : video, id: '360p', contexts: contexts })
 })
 
 chrome.runtime.onMessage.addListener(req => {
