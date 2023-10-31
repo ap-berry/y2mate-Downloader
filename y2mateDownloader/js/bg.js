@@ -52,7 +52,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
     const video = chrome.contextMenus.create({ contexts: contexts, title: "Video", id : 'video' })
 
-    chrome.contextMenus.create({ contexts: ['link', 'page'], title: "Audio (mp3)", id : 'audio', })
+    chrome.contextMenus.create({ contexts: contexts, title: "Audio (mp3)", id : 'audio', })
 
     //childs
     chrome.contextMenus.create({ title: "1080p HD", parentId : video, id: '1080p', contexts:  contexts})
