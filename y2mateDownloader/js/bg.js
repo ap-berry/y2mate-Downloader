@@ -100,9 +100,8 @@ chrome.runtime.onMessage.addListener(req => {
         chrome.scripting.executeScript({
           target : { tabId : tab.id},
           files : [script]
-        }, () => {
-          chrome.tabs.goBack();
         })
+        chrome.tabs.update(tabs[0].id, {active: true})
       })
     });
   }
