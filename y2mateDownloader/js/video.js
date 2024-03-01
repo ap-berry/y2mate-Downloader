@@ -1,3 +1,5 @@
+const sleep = ms => new Promise(r => setTimeout(r, ms))
+
 function textSelector(n){
   return `#mp4 > table > tbody > tr:nth-child(${n}) > td:nth-child(1)`
 }
@@ -53,7 +55,9 @@ async function clickToDownload(buttonIndex){
   downloadbtn.click()
   const confirmbtn = await waitForElement("#process-result > div > a", maxAttempts = 1000000)
   confirmbtn.click()
+  await sleep(1E3)
   closeTabs()
+  
 }
 
 // Get data from storage and call

@@ -1,3 +1,5 @@
+const sleep = ms => new Promise(r => setTimeout(r, ms))
+
 function closeTabs(){
   window.close();
 }
@@ -10,7 +12,6 @@ function clickDownloadBtn(){
 function clickConfirmBtn(){
   return waitForElementAndClick("#process-result > div > a", 1000000);
 }
-
 async function waitForElementAndClick(selector, maxAttempts = 10000, interval = 100){
   for(let i = 0; i < maxAttempts; i++){
     let elem = document.querySelector(selector)
@@ -33,6 +34,7 @@ async function download(){
     await switchToAudioDownloadPage()
     await clickDownloadBtn()
     await clickConfirmBtn()
+    await sleep(1E3)
     closeTabs()
   } catch (e) {
     alert(e)
