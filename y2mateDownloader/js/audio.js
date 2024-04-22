@@ -1,23 +1,25 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 
-function closeTabs(){
+async function closeTabs(){
   window.close();
 }
-function switchToAudioDownloadPage(){
-  return waitForElementAndClick("#selectTab > li:nth-child(2) > a");
+async function switchToAudioDownloadPage(){
+  (await waitForElement("#selectTab > li:nth-child(2) > a")).click();
 }
-function clickDownloadBtn(){
-  return waitForElementAndClick("#audio > table > tbody > tr > td.txt-center > button");
+async function clickDownloadBtn(){
+  (await waitForElement("#audio > table > tbody > tr > td.txt-center > button")).click();
 }
-function clickConfirmBtn(){
-  return waitForElementAndClick("#process-result > div > a", 1000000);
+async function clickConfirmBtnAndSendDwnLink(){
+  let btn_anchor = await waitForElement("#process-result > div > a");
+  console.log(btn_anchor)
+  chrome.runtime.sendMessage({ link: btn_anchor.href })
 }
-async function waitForElementAndClick(selector, maxAttempts = 10000, interval = 100){
+
+async function waitForElement(selector, maxAttempts = 1 * 20 * 10, interval = 100){
   for(let i = 0; i < maxAttempts; i++){
     let elem = document.querySelector(selector)
     if(elem){
-      elem.click();
-      return;
+      return elem;
     }
     else{
       await new Promise(resolve => {setTimeout(() => { resolve() }, interval)});
@@ -33,11 +35,12 @@ async function download(){
   try {
     await switchToAudioDownloadPage()
     await clickDownloadBtn()
-    await clickConfirmBtn()
+    await clickConfirmBtnAndSendDwnLink()
     await sleep(1E3)
-    closeTabs()
+    await closeTabs()
   } catch (e) {
-    alert(e)
+   // chrome.runtime.sendMessage({ error: e })
+    throw e;
   }
 }
 

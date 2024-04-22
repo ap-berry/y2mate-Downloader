@@ -35,7 +35,7 @@ async function findDownloadButton(videoFormat){
     if(text.includes(videoFormat)){
       foundFormat = true;
       try{
-        await clickToDownload(index+1);
+        await download(index+1);
         break;
       }
       catch(err){
@@ -45,19 +45,18 @@ async function findDownloadButton(videoFormat){
   }
 
   if(!foundFormat){
-    alert("Desired Format Not Found.Try Download It Yourself");
+    alert("Desired Format Not Found.Try Downloading It Yourself");
   }
 }
 
 // workflow
-async function clickToDownload(buttonIndex){
+async function download(buttonIndex){
   const downloadbtn = await waitForElement(btnSelector(buttonIndex))
   downloadbtn.click()
-  const confirmbtn = await waitForElement("#process-result > div > a", maxAttempts = 1000000)
-  confirmbtn.click()
+  const confirmbtn_anchor = await waitForElement("#process-result > div > a")
+  chrome.runtime.sendMessage({ link : confirmbtn_anchor.href })
   await sleep(1E3)
   closeTabs()
-  
 }
 
 // Get data from storage and call
