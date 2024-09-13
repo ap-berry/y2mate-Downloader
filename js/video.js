@@ -1,5 +1,6 @@
 const sleep = ms => new Promise(r => setTimeout(r, ms))
-
+let continueIfFormatNotFound = false
+let possibleFormats = [ "1080p", "720p", "480p", "360p" ]
 function textSelector(n){
   return `#mp4 > table > tbody > tr:nth-child(${n}) > td:nth-child(1)`
 }
@@ -25,10 +26,19 @@ async function waitForElement(selector, maxAttempts = 10000, interval = 100){
   throw Error("Element Not Found")
 }
 
-async function findDownloadButton(videoFormat){
+async function findDownloadButton(videoFormat, n = 0){
   const table = await waitForElement("#mp4 > table > tbody");
   const rows = table.getElementsByTagName("tr");
   let foundFormat = false;
+
+  if (videoFormat == "auto"){
+    continueIfFormatNotFound = true
+    if(possibleFormats.length == 0){
+      alert("Possible formats are not specified in the code")
+      return
+    }
+    videoFormat = possibleFormats[0]
+  }
 
   for (let index = 0; index < rows.length; index++) {
     const text = rows[index].getElementsByTagName("td")[0].textContent;
@@ -45,6 +55,13 @@ async function findDownloadButton(videoFormat){
   }
 
   if(!foundFormat){
+    if(continueIfFormatNotFound){
+      let nextIndex = n+1
+      if(nextIndex < possibleFormats.length){
+        findDownloadButton(possibleFormats[nextIndex], nextIndex)
+        return
+      }
+    }
     alert("Desired Format Not Found.Try Downloading It Yourself");
   }
 }

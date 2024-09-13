@@ -61,25 +61,31 @@ chrome.runtime.onInstalled.addListener(() => {
 
   //childs
   chrome.contextMenus.create({
-    title: "1080p HD",
+    title: "Auto 1080p to lower quality",
+    parentId: video,
+    id: "auto",
+    contexts: contexts,
+  });
+  chrome.contextMenus.create({
+    title: "1080p HD only",
     parentId: video,
     id: "1080p",
     contexts: contexts,
   });
   chrome.contextMenus.create({
-    title: "720p FHD",
+    title: "720p FHD only",
     parentId: video,
     id: "720p",
     contexts: contexts,
   });
   chrome.contextMenus.create({
-    title: "480p",
+    title: "480p only",
     parentId: video,
     id: "480p",
     contexts: contexts,
   });
   chrome.contextMenus.create({
-    title: "360p",
+    title: "360p only",
     parentId: video,
     id: "360p",
     contexts: contexts,
