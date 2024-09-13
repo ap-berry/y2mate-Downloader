@@ -28,4 +28,6 @@ This is rare since the options contain the most popular formats but HD and FHD s
 
 Might fix if it bothers too much
 
+NOTE: Added an 'Auto' download feature for solving this. It tries to download from 1080p to any lower quality it finds.
+
 ![options](/resources/screenshots/options.png)
